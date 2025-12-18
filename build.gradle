@@ -39,6 +39,13 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	
 	runtimeOnly 'com.h2database:h2'
+	
+	// 1. JWT 라이브러리 (auth0)
+
+	implementation("com.auth0:java-jwt:4.4.0")
+
+    // 2. Redis (refreshToken 저장용)
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 tasks.named('test') {
