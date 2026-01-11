@@ -48,4 +48,10 @@ public class File {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+    
+    @Column(name = "original_filename")
+    private String originalFilename;
+    
+    @Column(name = "file_size")
+    private Long fileSize;
 }
