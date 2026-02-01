@@ -1,10 +1,19 @@
 package com.ministorage.api.service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ministorage.api.entity.File;
 import com.ministorage.api.entity.User;
@@ -18,6 +27,66 @@ import lombok.RequiredArgsConstructor;
 public class FileService {
 
     private final FileRepository fileRepository;
+    
+    @Value("${file.upload-dir}")
+    private String uploadDir;
+    
+    @Transactional
+    public File uploadFile(User user, MultipartFile multipartFile) {
+    	if (multipartFile.isEmpty()) {
+    		throw new RuntimeException("파일이 비어있습니다.");
+    		
+    	}
+		
+    	try {
+    		// 1. 저장할 디렉토리가 없으면 생성
+    		Path uploadPath = Paths.get(uploadDir);
+    		if (!Files.exists(uploadPath)) {
+    			Files.createDirectories(uploadPath);
+    		}
+    		
+    		// 2. 파일명 중복 방지
+    		String originalFileName = multipartFile.getOriginalFilename();
+    		String uuid = UUID.randomUUID().toString();
+    		String extension = "";
+    		
+    		// 확장자 추출
+    		int i = originalFileName.lastIndexOf('.');
+    		if ( i > 0 ) {
+    			extension = originalFileName.substring(i);
+    		}
+    		
+    		String saveFileName = uuid + extension;
+    		
+    		// 3. 실제 파일 저장 ( 로컬 폴더로 복사 )
+    		Path targetLocation = uploadPath.resolve(saveFileName);
+    		Files.copy(multipartFile.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+    		
+    		
+    		// 4. DB에 정보 저장
+    		File file = new File();
+    		file.setUser(user);
+    		file.setTitle(originalFileName);
+    		file.setOriginalFilename(originalFileName);
+    		
+    		file.setUrl("/uploads/" + saveFileName);
+    		
+    		file.setType("file");
+    		file.setFileSize(multipartFile.getSize());
+    		file.setTrashed(false);
+    		file.setCreatedAt(LocalDateTime.now());
+    		
+    		// 맨 마지막에 추가
+    		List<File> existingFiles = getFilesByUser(user);
+    		file.setOrderIndex(existingFiles.size());
+    		
+    		return fileRepository.save(file);
+    		
+    		
+    	} catch(IOException e) {
+    		throw new RuntimeException("파일 저장 중 오류 발생: " + e.getMessage());
+    	}
+    }
     
     // 1. 유저별 일반 파일 조회 (휴지통 제외, 순서대로) 
     public List<File> getFilesByUser(User user) {

@@ -5,14 +5,15 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ministorage.api.entity.File;
 import com.ministorage.api.entity.User;
@@ -180,5 +181,17 @@ public class FileController {
     // 파일 생성용 DTO
     record FileCreateRequest(String title, String url, String type) {}
     
+    
+    // 8. 파일 업로드
+    
+    @PostMapping("/upload")
+    public ResponseEntity<File> uploadFile(
+    		Principal principal, @RequestParam("file") MultipartFile file) {
+    			
+    			User user = getUser(principal);
+    			File savedFile = fileService.uploadFile(user, file);
+    			
+    			return ResponseEntity.ok(savedFile);
+    		}
     
 }
