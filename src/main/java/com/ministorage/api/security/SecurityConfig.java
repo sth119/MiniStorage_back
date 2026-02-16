@@ -61,6 +61,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()  // 회원가입/로그인 허용
                 .requestMatchers("/h2-console/**").permitAll()  // H2 콘솔 허용 (개발용)
+                .requestMatchers("/uploads/**").permitAll() // ★ 이미지 요청 무사 통과!
+                .requestMatchers("/error").permitAll()      // ★ 에러 페이지 무사 통과!
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  //
                 .anyRequest().authenticated()  // 나머지 모든 API는 인증 필요
             )
