@@ -24,7 +24,7 @@ public class WebConfig implements WebMvcConfigurer {
         
         registry.addResourceHandler("/uploads/**")
                 // Mac 환경이므로 "file:" 뒤에 절대 경로 붙이기
-                .addResourceLocations("file:" + path); 
+                .addResourceLocations("file:///" + path); 
     }
 	
 	
