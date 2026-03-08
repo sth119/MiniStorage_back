@@ -1,8 +1,11 @@
 package com.ministorage.api.repository;
 
 import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+
 import com.ministorage.api.entity.File;
+import com.ministorage.api.entity.User;
 
 public interface FileRepository extends JpaRepository<File, Long> {
     
@@ -13,4 +16,9 @@ public interface FileRepository extends JpaRepository<File, Long> {
     // 2. 내 휴지통 목록 조회 (휴지통 O)
     // 기존 Service에서 호출하는 이름: findByUserIdAndTrashedTrue
     List<File> findByUserIdAndTrashedTrue(Long userId);
+
+	List<File> findByUserIdAndFolderIdIsNullAndTrashedFalse(Long userId);
+
+	List<File> findByUserIdAndFolderIdAndTrashedFalse(Long userId, Long folderId);
+    
 }

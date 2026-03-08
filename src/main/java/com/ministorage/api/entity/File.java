@@ -2,6 +2,8 @@ package com.ministorage.api.entity;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -26,6 +28,7 @@ public class File {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = true)
 	private User user;
@@ -54,4 +57,7 @@ public class File {
     
     @Column(name = "file_size")
     private Long fileSize;
+    
+    @Column(name = "folder_id")
+    private Long folderId;
 }
