@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ministorage.api.dto.FileDto;
 import com.ministorage.api.entity.File;
 import com.ministorage.api.entity.User;
 import com.ministorage.api.repository.UserRepository;
@@ -193,5 +194,24 @@ public class FileController {
     			
     			return ResponseEntity.ok(savedFile);
     		}
+    
+    // 9. 파일 이동
+    
+    @PatchMapping("/move")
+    public ResponseEntity<?> moveFiles (
+    		@RequestBody FileDto fileDto) {
+    	try {
+    		
+    		fileService.moveFiles(
+    				fileDto.getFileIds(),
+    				fileDto.getTargetFolderId(),
+    				fileDto.getUserId()
+    				
+    				);
+    			return ResponseEntity.ok("파일 이동이 완료되었습니다");
+    	} catch (Exception e) {
+    		return ResponseEntity.badRequest().body("이동 실패: " + e.getMessage());
+    	}
+    }
     
 }

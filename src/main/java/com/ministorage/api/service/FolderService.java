@@ -57,4 +57,47 @@ public class FolderService {
 		
 		}
 
+	
+	public void moveFiles( List<Long> fileIds, Long targetFolderId,  Long userId ) {
+		
+		List<File> filesToMove =fileRepository.findAllById(fileIds);
+		
+		for(File file : filesToMove) {
+			if (!file.getId().equals(userId)) {
+				throw new IllegalArgumentException("권한이 없는 파일입니다. backEnd_FolderService_moveFiles");
+			}
+			
+			file.setFolderId(targetFolderId);
+		}
+		
+		fileRepository.saveAll(filesToMove);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 } // end service

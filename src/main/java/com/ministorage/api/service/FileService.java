@@ -176,4 +176,20 @@ public class FileService {
         });
     }
     
+    // 8. 파일 이동 로직
+    @Transactional
+    public void moveFiles(List<Long> fileIds, Long targetFolderId, Long userId) {
+        List<File> filesToMove = fileRepository.findAllById(fileIds);
+
+        for (File file : filesToMove) {
+            // 프론트에서 넘어온 userId와 파일 주인의 userId가 같은지 확인
+        	if (!file.getUser().getId().equals(userId)) {
+        	    throw new IllegalArgumentException("권한이 없는 파일입니다.");
+        	}
+            file.setFolderId(targetFolderId); 
+        }
+
+        fileRepository.saveAll(filesToMove);
+    }
+    
 } // end Service
