@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ministorage.api.dto.FileCreateRequest;
 import com.ministorage.api.dto.FileDto;
 import com.ministorage.api.entity.File;
 import com.ministorage.api.entity.User;
@@ -130,7 +131,9 @@ public class FileController {
                 user,
                 request.title(),
                 request.url(),
-                request.type()
+                request.type(),
+                request.folderId()
+                
         );
         return ResponseEntity.ok(file);
     }
@@ -179,8 +182,6 @@ public class FileController {
         return ResponseEntity.ok().build();
     }
     
-    // 파일 생성용 DTO
-    record FileCreateRequest(String title, String url, String type) {}
     
     
     // 8. 파일 업로드

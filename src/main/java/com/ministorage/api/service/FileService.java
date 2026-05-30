@@ -100,7 +100,7 @@ public class FileService {
     
     // 3. 파일 생성
     @Transactional
-    public File createFile(User user, String title, String url, String type) {
+    public File createFile(User user, String title, String url, String type, Long folderId) {
        
         File file = new File();
         
@@ -108,6 +108,7 @@ public class FileService {
         file.setUrl(url.trim());
         file.setType(type != null ? type.trim() : "link");
         file.setTrashed(false); // 기본값 명시
+        file.setFolderId(folderId);
         
         // 로그인 유저일 때만 DB 저장
         if (user != null) {
